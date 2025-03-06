@@ -2,16 +2,18 @@ using UnityEngine;
 
 public class ToolController : MonoBehaviour
 {
-    public enum ToolType { None, Axe, Shovel, Pickaxe }
+    public enum ToolType { None, Axe, Shovel, Pickaxe, WateringCan, Fertilizer }
     public ToolType currentTool = ToolType.None;
 
     public GameObject axeTool;
     public GameObject shovelTool;
     public GameObject pickaxeTool;
+    public GameObject wateringCanTool;
+    public GameObject fertilizerTool;
 
     void Update()
     {
-        // Verifica qual tecla foi pressionada para selecionar a ferramenta
+        // Check which key was pressed to select the tool
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             SelectTool(ToolType.Axe);
@@ -27,6 +29,16 @@ public class ToolController : MonoBehaviour
             SelectTool(ToolType.Pickaxe);
             Debug.Log("Pickaxe selected");
         }
+        else if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            SelectTool(ToolType.WateringCan);
+            Debug.Log("Watering Can selected");
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha5))
+        {
+            SelectTool(ToolType.Fertilizer);
+            Debug.Log("Fertilizer selected");
+        }
     }
 
     void SelectTool(ToolType toolType)
@@ -35,6 +47,8 @@ public class ToolController : MonoBehaviour
         axeTool.SetActive(toolType == ToolType.Axe);
         shovelTool.SetActive(toolType == ToolType.Shovel);
         pickaxeTool.SetActive(toolType == ToolType.Pickaxe);
+        wateringCanTool.SetActive(toolType == ToolType.WateringCan);
+        fertilizerTool.SetActive(toolType == ToolType.Fertilizer);
     }
 
     public ToolType GetCurrentTool()

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ShovelTool : MonoBehaviour
+public class FertilizerTool : MonoBehaviour
 {
     private BoxCollider2D toolCollider;
     private Animator animator;
@@ -56,7 +56,7 @@ public class ShovelTool : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("TerraPlantavel"))
+        if (collision.CompareTag("Soil"))
         {
             UseTool(collision);
         }
@@ -65,19 +65,12 @@ public class ShovelTool : MonoBehaviour
     public void UseTool(Collider2D collision)
     {
         // Trigger the tool animation
-        animator.SetInteger("Transicao", 8); // UseShovel
+        animator.SetInteger("Transicao", 5); // UseFertilizer
 
         Soil soil = collision.GetComponent<Soil>();
-        if (soil != null)
+        if (soil != null && soil.isPlanted && !soil.isWatered)
         {
-            if (!soil.isDug)
-            {
-                soil.Dig();
-            }
-            else if (!soil.isPlanted)
-            {
-                soil.Plant(GetComponentInParent<Player>().plantPrefab);
-            }
+            soil.Water(); // Fertilizing has the same effect as watering for simplicity
         }
     }
 }

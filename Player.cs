@@ -18,8 +18,10 @@ public class Player : MonoBehaviour
     public bool isUsingTool;
     public GameObject shovel;
     public GameObject axe;
-    public GameObject pickaxe; // Adicione esta linha para o prefab da PickaxeTool
+    public GameObject pickaxe; // Add this line for the PickaxeTool prefab
     public GameObject plantPrefab;
+    public GameObject wateringCan;
+    public GameObject fertilizer;
 
     private Soil currentSoil;
 
@@ -84,19 +86,29 @@ public class Player : MonoBehaviour
                     currentSoil.Plant(plantPrefab);
                 }
             }
-            // Adicione lógica para o uso do axe aqui
+            // Logic for using the axe
             if (axe.activeInHierarchy)
             {
-                // Adicione lógica para usar o axe
+                // Add logic for using the axe
             }
-            // Adicione lógica para o uso do pickaxe aqui
+            // Logic for using the pickaxe
             if (pickaxe.activeInHierarchy)
             {
-                // Adicione lógica para usar o pickaxe
+                // Add logic for using the pickaxe
+            }
+            // Logic for using the watering can
+            if (wateringCan.activeInHierarchy)
+            {
+                currentSoil.Water();
+            }
+            // Logic for using the fertilizer
+            if (fertilizer.activeInHierarchy)
+            {
+                currentSoil.Water(); // Fertilizing has the same effect as watering for simplicity
             }
         }
 
-        // Detectar outras ações do jogador
+        // Detect other player actions
         isPlanting = Input.GetKeyDown(KeyCode.Alpha1);
         isWatering = Input.GetKeyDown(KeyCode.Alpha2);
         isFishing = Input.GetKeyDown(KeyCode.Alpha3);

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ShovelTool : MonoBehaviour
+public class Harvesting : MonoBehaviour
 {
     private BoxCollider2D toolCollider;
     private Animator animator;
@@ -56,7 +56,7 @@ public class ShovelTool : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("TerraPlantavel"))
+        if (collision.CompareTag("Plant"))
         {
             UseTool(collision);
         }
@@ -65,19 +65,19 @@ public class ShovelTool : MonoBehaviour
     public void UseTool(Collider2D collision)
     {
         // Trigger the tool animation
-        animator.SetInteger("Transicao", 8); // UseShovel
+        animator.SetTrigger("UseHarvestingTool");
 
-        Soil soil = collision.GetComponent<Soil>();
-        if (soil != null)
+        PlantGrowth plantGrowth = collision.GetComponent<PlantGrowth>();
+        if (plantGrowth != null && plantGrowth.IsFullyGrown())
         {
-            if (!soil.isDug)
-            {
-                soil.Dig();
-            }
-            else if (!soil.isPlanted)
-            {
-                soil.Plant(GetComponentInParent<Player>().plantPrefab);
-            }
+            Harvest(plantGrowth);
         }
+    }
+
+    private void Harvest(PlantGrowth plantGrowth)
+    {
+        // Logic for harvesting the fully grown plant
+        Debug.Log("Plant harvested.");
+        Destroy(plantGrowth.gameObject);
     }
 }

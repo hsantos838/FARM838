@@ -29,26 +29,26 @@ public class PickaxeTool : MonoBehaviour
             Debug.LogError("SpriteRenderer component not found on player.");
         }
 
-        // Salvar a posição original do offset do colisor
+        // Save the original position of the collider offset
         originalOffset = toolCollider.offset;
 
-        // Inicialmente desativar o colisor da ferramenta
+        // Initially disable the tool collider
         toolCollider.enabled = false;
     }
 
     void Update()
     {
-        // Inverter a posição do eixo X do colisor com base na direção do jogador
+        // Flip the collider's X position based on the player's direction
         toolCollider.offset = new Vector2(playerSpriteRenderer.flipX ? -originalOffset.x : originalOffset.x, originalOffset.y);
     }
 
-    // Método chamado pelo Animator via Animation Event
+    // Method called by the Animator via Animation Event
     public void EnableToolCollider()
     {
         toolCollider.enabled = true;
     }
 
-    // Método chamado pelo Animator via Animation Event
+    // Method called by the Animator via Animation Event
     public void DisableToolCollider()
     {
         toolCollider.enabled = false;
@@ -64,13 +64,13 @@ public class PickaxeTool : MonoBehaviour
 
     public void UseTool(Collider2D collision)
     {
-        // Aciona a animação da ferramenta
-        animator.SetTrigger("UsePickaxe");
+        // Trigger the tool animation
+        animator.SetInteger("Transicao", 9); // UsePickaxe
 
-        // Adicione a lógica específica para interagir com objetos com a tag "Mineral"
+        // Add specific logic to interact with objects tagged as "Mineral"
         Debug.Log("Pickaxe used on a mineral.");
 
-        // Se o mineral tem um script de saúde, reduza a saúde
+        // If the mineral has a health script, reduce its health
         Mineral mineral = collision.GetComponent<Mineral>();
         if (mineral != null)
         {

@@ -1,34 +1,54 @@
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class Soil : MonoBehaviour
 {
-    public Sprite dugSprite;
-    public Sprite plantedSprite;
+    public Tile dugTile;
+    public Tile plantedTile;
+    public Tile wateredTile;
     public bool isDug = false;
     public bool isPlanted = false;
-    private SpriteRenderer spriteRenderer;
+    public bool isWatered = false;
+
+    private Tilemap tilemap;
+    private Vector3Int tilePosition;
 
     void Start()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        tilemap = GetComponent<Tilemap>();
+        if (tilemap == null)
+        {
+            Debug.LogError("Tilemap component not found on " + gameObject.name);
+        }
+
+        tilePosition = tilemap.WorldToCell(transform.position);
     }
 
     public void Dig()
     {
-        if (!isDug)
-        {
-            isDug = true;
-            spriteRenderer.sprite = dugSprite;
-        }
+        if (tilemap == null) return; // Verifica se o Tilemap está presente
+        isDug = true;
+        tilemap.SetTile(tilePosition, dugTile);
     }
 
     public void Plant(GameObject plantPrefab)
     {
+        if (tilemap == null) return; // Verifica se o Tilemap está presente
         if (isDug && !isPlanted)
         {
             isPlanted = true;
-            spriteRenderer.sprite = plantedSprite;
-            Instantiate(plantPrefab, transform.position, Quaternion.identity);
+            tilemap.SetTile(tilePosition, plantedTile);
+            Instantiate(plantPrefab, tilemap.CellToWorld(tilePosition), Quaternion.identity);
+        }
+    }
+
+    public void Water()
+    {
+        if (tilemap == null) return; // Verifica se o Tilemap está presente
+        if (isPlanted && !isWatered)
+        {
+            isWatered = true;
+            tilemap.SetTile(tilePosition, wateredTile);
         }
     }
 }
