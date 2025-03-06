@@ -3,31 +3,37 @@ using UnityEngine;
 public class Plant : MonoBehaviour
 {
     public Sprite[] growthStages;
-    public float timeToGrow = 5f;
+    public float timeBetweenStages = 5f;
+    private SpriteRenderer spriteRenderer;
     private int currentStage = 0;
-    private float timer = 0f;
+    private float timer;
+
+    void Start()
+    {
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        spriteRenderer.sprite = growthStages[currentStage];
+        timer = timeBetweenStages;
+    }
 
     void Update()
     {
-        timer += Time.deltaTime;
-        if (timer >= timeToGrow && currentStage < growthStages.Length - 1)
+        if (currentStage < growthStages.Length - 1)
         {
-            timer = 0f;
-            currentStage++;
-            GetComponent<SpriteRenderer>().sprite = growthStages[currentStage];
+            timer -= Time.deltaTime;
+            if (timer <= 0f)
+            {
+                currentStage++;
+                spriteRenderer.sprite = growthStages[currentStage];
+                timer = timeBetweenStages;
+            }
         }
-    }
-
-    public bool IsFullyGrown()
-    {
-        return currentStage == growthStages.Length - 1;
     }
 
     public void Harvest()
     {
-        if (IsFullyGrown())
+        if (currentStage == growthStages.Length - 1)
         {
-            // Implement harvest logic, e.g., adding to inventory
+            // Adicione a lógica de colheita aqui (por exemplo, adicionar recompensas ao jogador)
             Destroy(gameObject);
         }
     }

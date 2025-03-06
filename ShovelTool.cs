@@ -2,9 +2,6 @@ using UnityEngine;
 
 public class ShovelTool : MonoBehaviour
 {
-    public GameObject plotPrefab;
-    public LayerMask plantableLayer; // Layer que representa a terra plantável
-
     private BoxCollider2D toolCollider;
     private Animator animator;
     private SpriteRenderer playerSpriteRenderer;
@@ -70,26 +67,17 @@ public class ShovelTool : MonoBehaviour
         // Aciona a animação da ferramenta
         animator.SetTrigger("UseShovel");
 
-        Vector3 plotPosition = collision.transform.position;
-        plotPosition.z = 0; // Garantir que a posição Z seja 0
-
-        if (!IsPlotAlreadyPresent(plotPosition))
+        Soil soil = collision.GetComponent<Soil>();
+        if (soil != null)
         {
-            Instantiate(plotPrefab, plotPosition, Quaternion.identity);
-            Debug.Log("Plot created on plantable soil.");
-        }
-    }
-
-    private bool IsPlotAlreadyPresent(Vector3 position)
-    {
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(position, 0.1f);
-        foreach (Collider2D collider in colliders)
-        {
-            if (collider.GetComponent<Plot>() != null)
+            if (!soil.isDug)
             {
-                return true;
+                soil.Dig();
+            }
+            else if (!soil.isPlanted)
+            {
+                soil.Plant(GetComponentInParent<Player>().plantPrefab);
             }
         }
-        return false;
     }
 }

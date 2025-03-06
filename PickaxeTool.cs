@@ -56,7 +56,7 @@ public class PickaxeTool : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Mineraveis"))
+        if (collision.CompareTag("Mineral"))
         {
             UseTool(collision);
         }
@@ -67,7 +67,14 @@ public class PickaxeTool : MonoBehaviour
         // Aciona a animação da ferramenta
         animator.SetTrigger("UsePickaxe");
 
-        // Adicione a lógica específica para interagir com objetos com a tag "Mineraveis"
+        // Adicione a lógica específica para interagir com objetos com a tag "Mineral"
         Debug.Log("Pickaxe used on a mineral.");
+
+        // Se o mineral tem um script de saúde, reduza a saúde
+        Mineral mineral = collision.GetComponent<Mineral>();
+        if (mineral != null)
+        {
+            mineral.TakeDamage(1);
+        }
     }
 }

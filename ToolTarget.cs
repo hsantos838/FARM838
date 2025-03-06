@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class ToolTarget : MonoBehaviour
 {
-    public int health = 100;
+    public int health = 10;
     public GameObject dropPrefab; // Prefab a ser dropado na cena
     public Sprite cutSprite; // Sprite a ser exibido após a "morte"
     private bool isCut = false; // Para verificar se o objeto já foi cortado
@@ -11,15 +11,11 @@ public class ToolTarget : MonoBehaviour
     void Start()
     {
         animator = GetComponent<Animator>();
-        if (animator == null)
-        {
-            Debug.LogError("Animator component not found on target.");
-        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Tool") && !isCut)
+        if ((collision.CompareTag("Axe") || collision.CompareTag("Pickaxe") || collision.CompareTag("Shovel")) && !isCut)
         {
             animator.SetTrigger("OnHit");
             TakeDamage(1); // A ferramenta causa 1 de dano
@@ -42,7 +38,7 @@ public class ToolTarget : MonoBehaviour
         GetComponent<SpriteRenderer>().sprite = cutSprite;
 
         // Drop uma quantidade aleatória de prefabs na cena
-        int dropCount = Random.Range(1, 4); // Gera um número aleatório entre 1 e 3
+        int dropCount = Random.Range(1, 5); // Gera um número aleatório entre 1 e 4
         for (int i = 0; i < dropCount; i++)
         {
             if (dropPrefab != null)

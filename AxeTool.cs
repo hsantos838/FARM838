@@ -56,7 +56,7 @@ public class AxeTool : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("ArvoresUteis"))
+        if (collision.CompareTag("Tree"))
         {
             UseTool(collision);
         }
@@ -67,7 +67,14 @@ public class AxeTool : MonoBehaviour
         // Aciona a animação da ferramenta
         animator.SetTrigger("UseAxe");
 
-        // Adicione a lógica específica para interagir com objetos com a tag "ArvoresUteis"
-        Debug.Log("Axe used on a useful tree.");
+        // Adicione a lógica específica para interagir com objetos com a tag "Tree"
+        Debug.Log("Axe used on a tree.");
+
+        // Se a árvore tem um script de saúde, reduza a saúde
+        Tree tree = collision.GetComponent<Tree>();
+        if (tree != null)
+        {
+            tree.TakeDamage(1);
+        }
     }
 }
