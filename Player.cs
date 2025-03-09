@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     public float walkSpeed = 5f;
     public float runSpeed = 5.8f;
@@ -8,136 +8,64 @@ public class Player : MonoBehaviour
     private Rigidbody2D rb;
     private Vector2 moveInput;
     private Vector2 moveVelocity;
-    private SpriteRenderer spriteRenderer;
+    private SpriteRenderer sprite;
 
-    public bool isRunning;
+    public bool isRunning;  
     public bool isPlanting;
     public bool isWatering;
     public bool isFishing;
     public bool isReaping;
     public bool isUsingTool;
-    public GameObject shovel;
-    public GameObject axe;
-    public GameObject pickaxe; // Add this line for the PickaxeTool prefab
-    public GameObject plantPrefab;
-    public GameObject wateringCan;
-    public GameObject fertilizer;
-
-    private Soil currentSoil;
-
-    void Awake()
-    {
-        rb = GetComponent<Rigidbody2D>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
-    }
 
     void Start()
     {
         currentSpeed = walkSpeed;
+        rb = GetComponent<Rigidbody2D>();
+        sprite = GetComponent<SpriteRenderer>();
     }
-
+  
     void Update()
     {
-        HandleMovementInput();
         HandleActionInput();
-        UpdateToolUsage();
+        // Captura a entrada do jogador
+        float moveX = Input.GetAxisRaw("Horizontal");
+        float moveY = Input.GetAxisRaw("Vertical");
+
+        if (isUsingTool)
+        {
+            moveVelocity = Vector2.zero; // Parar o movimento se o jogador estiver usando uma ferramenta
+        }
+        else
+        {
+            moveInput = new Vector2(moveX, moveY).normalized * currentSpeed;
+            moveVelocity = moveInput;
+
+            // Virar o sprite do personagem
+            if (moveX < 0)
+            {
+                sprite.flipX = true;
+            }
+            else if (moveX > 0)
+            {
+                sprite.flipX = false;
+            }
+        }
+
+        // Detectar outras ações do jogador
+        isPlanting = Input.GetKeyDown(KeyCode.Alpha1);
+        isWatering = Input.GetKeyDown(KeyCode.Alpha2);
+        isFishing = Input.GetKeyDown(KeyCode.Alpha3);
+        isReaping = Input.GetKeyDown(KeyCode.Alpha4); 
     }
 
     void FixedUpdate()
     {
-        MovePlayer();
-    }
-
-    private void HandleMovementInput()
-    {
-        if (!isUsingTool)
-        {
-            float moveX = Input.GetAxisRaw("Horizontal");
-            float moveY = Input.GetAxisRaw("Vertical");
-            moveInput = new Vector2(moveX, moveY).normalized;
-
-            isRunning = Input.GetKey(KeyCode.LeftShift);
-            currentSpeed = isRunning ? runSpeed : walkSpeed;
-            moveVelocity = moveInput * currentSpeed;
-
-            if (moveX != 0)
-            {
-                spriteRenderer.flipX = moveX < 0;
-            }
-        }
-        else
-        {
-            moveVelocity = Vector2.zero;
-        }
+        rb.linearVelocity = moveVelocity;
     }
 
     private void HandleActionInput()
     {
-        if (Input.GetMouseButtonDown(0) && currentSoil != null)
-        {
-            if (shovel.activeInHierarchy)
-            {
-                if (!currentSoil.isDug)
-                {
-                    currentSoil.Dig();
-                }
-                else if (!currentSoil.isPlanted)
-                {
-                    currentSoil.Plant(plantPrefab);
-                }
-            }
-            // Logic for using the axe
-            if (axe.activeInHierarchy)
-            {
-                // Add logic for using the axe
-            }
-            // Logic for using the pickaxe
-            if (pickaxe.activeInHierarchy)
-            {
-                // Add logic for using the pickaxe
-            }
-            // Logic for using the watering can
-            if (wateringCan.activeInHierarchy)
-            {
-                currentSoil.Water();
-            }
-            // Logic for using the fertilizer
-            if (fertilizer.activeInHierarchy)
-            {
-                currentSoil.Water(); // Fertilizing has the same effect as watering for simplicity
-            }
-        }
-
-        // Detect other player actions
-        isPlanting = Input.GetKeyDown(KeyCode.Alpha1);
-        isWatering = Input.GetKeyDown(KeyCode.Alpha2);
-        isFishing = Input.GetKeyDown(KeyCode.Alpha3);
-        isReaping = Input.GetKeyDown(KeyCode.Alpha4);
-    }
-
-    private void UpdateToolUsage()
-    {
-        isUsingTool = isPlanting || isWatering || isFishing || isReaping;
-    }
-
-    private void MovePlayer()
-    {
-        rb.MovePosition(rb.position + moveVelocity * Time.fixedDeltaTime);
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.CompareTag("TerraPlantavel"))
-        {
-            currentSoil = collision.GetComponent<Soil>();
-        }
-    }
-
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (collision.CompareTag("TerraPlantavel"))
-        {
-            currentSoil = null;
-        }
-    }
+        isUsingTool = Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Alpha2) ||
+                      Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown(KeyCode.Alpha4);
+    }       
 }

@@ -11,7 +11,6 @@ public class Soil : MonoBehaviour
     public bool isWatered = false;
 
     private Tilemap tilemap;
-    private Vector3Int tilePosition;
 
     void Start()
     {
@@ -20,35 +19,42 @@ public class Soil : MonoBehaviour
         {
             Debug.LogError("Tilemap component not found on " + gameObject.name);
         }
-
-        tilePosition = tilemap.WorldToCell(transform.position);
     }
 
     public void Dig()
     {
-        if (tilemap == null) return; // Verifica se o Tilemap está presente
         isDug = true;
+        Vector3Int tilePosition = tilemap.WorldToCell(transform.position);
         tilemap.SetTile(tilePosition, dugTile);
+        Debug.Log("Soil dug at position: " + tilePosition);
     }
 
-    public void Plant(GameObject plantPrefab)
+    public void Plant(GameObject plantPrefab, Vector3Int tilePosition)
     {
-        if (tilemap == null) return; // Verifica se o Tilemap está presente
         if (isDug && !isPlanted)
         {
             isPlanted = true;
             tilemap.SetTile(tilePosition, plantedTile);
-            Instantiate(plantPrefab, tilemap.CellToWorld(tilePosition), Quaternion.identity);
+            Vector3 cellWorldPosition = tilemap.GetCellCenterWorld(tilePosition);
+            Instantiate(plantPrefab, cellWorldPosition, Quaternion.identity);
+            Debug.Log("Plant planted at position: " + cellWorldPosition);
         }
     }
 
     public void Water()
     {
-        if (tilemap == null) return; // Verifica se o Tilemap está presente
         if (isPlanted && !isWatered)
         {
             isWatered = true;
+            Vector3Int tilePosition = tilemap.WorldToCell(transform.position);
             tilemap.SetTile(tilePosition, wateredTile);
+            Debug.Log("Soil watered at position: " + tilePosition);
         }
+    }
+
+    // Adiciona um método público para acessar a tilemap
+    public Tilemap GetTilemap()
+    {
+        return tilemap;
     }
 }

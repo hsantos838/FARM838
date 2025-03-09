@@ -5,7 +5,6 @@ public class ShovelTool : MonoBehaviour
     private BoxCollider2D toolCollider;
     private Animator animator;
     private SpriteRenderer playerSpriteRenderer;
-
     private Vector2 originalOffset;
 
     void Start()
@@ -54,30 +53,7 @@ public class ShovelTool : MonoBehaviour
         toolCollider.enabled = false;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.CompareTag("TerraPlantavel"))
-        {
-            UseTool(collision);
+  
+     
+            
         }
-    }
-
-    public void UseTool(Collider2D collision)
-    {
-        // Trigger the tool animation
-        animator.SetInteger("Transicao", 8); // UseShovel
-
-        Soil soil = collision.GetComponent<Soil>();
-        if (soil != null)
-        {
-            if (!soil.isDug)
-            {
-                soil.Dig();
-            }
-            else if (!soil.isPlanted)
-            {
-                soil.Plant(GetComponentInParent<Player>().plantPrefab);
-            }
-        }
-    }
-}
